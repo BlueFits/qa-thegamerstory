@@ -1,0 +1,10 @@
+.input {
+    color: #fff;
+    background-color: transparent;
+    border-bottom: 1px solid white;
+    width: 60%;
+    text-align: center;
+    font-size: 30px;
+    outline: none;
+    margin: 20px 0px;
+}
