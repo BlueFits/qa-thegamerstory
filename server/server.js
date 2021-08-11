@@ -9,6 +9,7 @@ const handle = app.getRequestHandler()
 app.prepare().then(() => {
     const path = require('path');
     const cookieParser = require('cookie-parser');
+    const logger = require('morgan');
     const mongoose = require("mongoose");
 
 
@@ -25,7 +26,12 @@ app.prepare().then(() => {
     db.on("connected", () => console.log("connected to mongo (*_*)"));
     db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+    server.use(logger('dev'));
     server.use(cookieParser());
+    server.use(express.json());
+    server.use(express.urlencoded({ extended: false }));
+    server.use(cookieParser());
+    server.use(express.static(path.join(__dirname, 'public')));
 
     server.use("/api", indexRouter);
 
