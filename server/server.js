@@ -8,9 +8,24 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
     const path = require('path');
+    const cookieParser = require('cookie-parser');
+    const mongoose = require("mongoose");
+
 
     const indexRouter = require('./routes/index');
     const server = express();
+
+    //Mongoose Connection
+    let dev_db_url = "mongodb+srv://christianAdmin:mongopassword@cluster0.ubkpu.mongodb.net/leanIdea?retryWrites=true&w=majority";
+    let mongoDB = process.env.MONGODB_URI || dev_db_url;
+
+    mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = mongoose.connection;
+
+    db.on("connected", () => console.log("connected to mongo (*_*)"));
+    db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+    server.use(cookieParser());
 
     server.use("/api", indexRouter);
 
