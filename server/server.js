@@ -14,10 +14,12 @@ app.prepare().then(() => {
 
 
     const indexRouter = require('./routes/index');
+    const userRouter = require("./routes/user");
+    
     const server = express();
 
     //Mongoose Connection
-    let dev_db_url = "mongodb+srv://christianAdmin:mongopassword@cluster0.ubkpu.mongodb.net/leanIdea?retryWrites=true&w=majority";
+    let dev_db_url = "mongodb+srv://christianAdmin:mongopassword@cluster0.ubkpu.mongodb.net/thegamerstory?retryWrites=true&w=majority";
     let mongoDB = process.env.MONGODB_URI || dev_db_url;
 
     mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -34,6 +36,7 @@ app.prepare().then(() => {
     server.use(express.static(path.join(__dirname, 'public')));
 
     server.use("/api", indexRouter);
+    server.use("/api/user", userRouter);
 
     server.all('*', (req, res) => {
         return handle(req, res)
