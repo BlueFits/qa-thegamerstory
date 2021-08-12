@@ -6,7 +6,7 @@ import RoadMap from "../../../assets/svg/RoadMap.svg"
 import Image from "next/image";
 import { useRouter } from "next/router"
 
-const history = () => {
+const Index = () => {
 
     const router = useRouter();
 
@@ -39,4 +39,4 @@ const history = () => {
     );
 };
 
-export default history;
+export default Index;

@@ -4,7 +4,7 @@ import Layout from "../../components/Layout/Layout";
 import {useRouter} from "next/router";
 import Typography from '../../components/Typography/Typography';
 
-const index = () => {
+const Index = () => {
 
     const router = useRouter();
 
@@ -23,4 +23,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;

@@ -1,7 +1,7 @@
 import Layout from "../../../components/Layout/Layout";
 import CharCard from "../../../components/CharCard/CharCard";
 
-const index = () => {
+const Index = () => {
     return (
         <Layout>
             <section style={{ minHeight: "100vh", width: "100vw" }} className="bg-black flex justify-center items-center">
@@ -15,4 +15,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;
