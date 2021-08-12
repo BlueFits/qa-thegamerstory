@@ -1,8 +1,17 @@
 import 'tailwindcss/tailwind.css';
 import Banner from "../../components/Banner/Banner";
 import Layout from "../../components/Layout/Layout";
+import {useRouter} from "next/router";
+import Typography from '../../components/Typography/Typography';
 
 const index = () => {
+
+    const router = useRouter();
+
+    if (router.query.story !== "ffxiv") {
+        return <Typography color="black">Not Found</Typography>
+    }
+
     return (
         <Layout>
             <Banner
