@@ -1,8 +1,8 @@
 import styles from "./LineInput.module.css";
 
-const LineInput = () => {
+const LineInput = ({ value, onChangeHandler }) => {
     return (
-        <input type="password" className={styles.input}/>
+        <input value={value} onChange={onChangeHandler} type="password" className={styles.input}/>
     );
 };
 

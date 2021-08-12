@@ -1,0 +1,13 @@
+.charImg {
+    height: 300px;
+    width: 200px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 15px;
+}
+
+.card {
+    margin: 0 40px 40px 40px;
+    cursor: pointer;
+}

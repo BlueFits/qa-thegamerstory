@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server/server.js",
+    "devstart": "nodemon server/server.js",
+    "dev": "next dev",
     "build": "next build",
     "start": "node server/server.js -p $PORT",
     "lint": "next lint"
