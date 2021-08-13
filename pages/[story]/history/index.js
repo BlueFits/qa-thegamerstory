@@ -19,17 +19,17 @@ const Index = () => {
                     <Typography type="s2" bold>TIMELINE</Typography>
                 </div>
                 <div className="flex justify-center flex-col" style={{ width: 1000, padding: "40px 20px"}}>
-                    <Link href={`/${story}/blogID`}><a>
                         <div className="flex flex-col justify-center items-center">
                             <Typography style={{ marginBottom: 25 }} type="r1">PROLOGUE</Typography>
                             <div className="flex">
-                                <TimeLineBlock
-                                    title="Some Title"
-                                    src="https://image.shutterstock.com/image-photo/abstraction-futuristic-city-concrete-neon-260nw-1536232397.jpgs"
-                                />
+                                <Link href={`/${story}/blogID`}><a>
+                                    <TimeLineBlock
+                                        title="Some Title"
+                                        src="https://image.shutterstock.com/image-photo/abstraction-futuristic-city-concrete-neon-260nw-1536232397.jpgs"
+                                    />
+                                </a></Link>
                             </div>
                         </div>
-                    </a></Link>
                     {/* <div className="flex justify-center my-4">
                         <Image src={RoadMap}/>
                     </div> */}
