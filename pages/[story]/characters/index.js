@@ -40,7 +40,7 @@ const Index = ({ chars }) => {
                 <div className="flex-wrap flex justify-center" style={{ width: 1000 }}>
                     {chars.map((char, index) => {
                         return (
-                            <Link href={`/${story}/${char._id}`}>
+                            <Link key={"key:" + index} href={`/${story}/${char._id}`}>
                                 <a>
                                     <CharCard 
                                         title={char.blogTitle}
