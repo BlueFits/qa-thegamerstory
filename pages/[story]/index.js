@@ -3,10 +3,11 @@ import Banner from "../../components/Banner/Banner";
 import Layout from "../../components/Layout/Layout";
 import {useRouter} from "next/router";
 import Typography from '../../components/Typography/Typography';
+import { serverURL } from "../../config/Server";
 
 export const getServerSideProps = async (context) => {
     try {
-        const res = await fetch("http://localhost:3000"+ "/api/blog/get_latest?hub=" + context.query.story);
+        const res = await fetch(serverURL + "/api/blog/get_latest?hub=" + context.query.story);
         let resData = await res.json();
         if (!res.ok) {
             resData = { error: "error" };
