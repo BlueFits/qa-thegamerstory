@@ -15,6 +15,8 @@ app.prepare().then(() => {
 
     const indexRouter = require('./routes/index');
     const userRouter = require("./routes/user");
+    const hubRouter = require("./routes/hub");
+    const blogRouter = require("./routes/blog");
     
     const server = express();
 
@@ -37,6 +39,8 @@ app.prepare().then(() => {
 
     server.use("/api", indexRouter);
     server.use("/api/user", userRouter);
+    server.use("/api/hub", hubRouter);
+    server.use("/api/blog", blogRouter);
 
     server.all('*', (req, res) => {
         return handle(req, res)

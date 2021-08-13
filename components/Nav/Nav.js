@@ -8,7 +8,7 @@ const Nav = ({ query }) => {
             <li className="mx-8"><Link href={"/" + query[0]} passHref><a><Typography type="r2">HOME</Typography></a></Link></li>
             <li className="mx-8"><Link href={"/" + query[0] + "/characters"} passHref><a><Typography type="r2">CHARACTERS</Typography></a></Link></li>
             <li className="mx-8"><Link href={"/" + query[0] + "/history"} passHref><a><Typography type="r2">HISTORY</Typography></a></Link></li>
-            <li className="mx-8"><Link href="/" passHref><ButtonA><a><Typography type="r2">PROFILE</Typography></a></ButtonA></Link></li>
+            <li className="mx-8"><Link href="/" passHref><ButtonA><a><Typography type="r2">LOG IN</Typography></a></ButtonA></Link></li>
         </ul>
     );
 };

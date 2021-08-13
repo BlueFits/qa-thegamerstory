@@ -7,6 +7,8 @@ const UserSchema = new Schema({
     lastName: { type: String, requried: true },
     email: { type: String, required: true },
     password: { type: String, required: true, trim: true },
+    hub: [{ type: Schema.Types.ObjectId, ref: 'Hub' }],
+    createdAt: { type: Date, default: Date.now },
 });
 
 UserSchema.pre("save", function(next) {
