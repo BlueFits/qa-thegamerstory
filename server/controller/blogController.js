@@ -10,6 +10,17 @@ exports.createBlog = async (req, res, next) => {
     });
 }
 
+exports.getAllBlogs = async (req, res, next) => {
+    await Blog.find().exec((err, blogs) => {
+        if (err) {return next(err);}
+        if (blogs.length === 0) {
+            res.status(400).send({ error: "No blogs" });
+        } else {
+            res.status(200).send(blogs);;
+        }
+    });
+}
+
 exports.updateBlog = async (req, res, next) => {
     const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage } = req.body;
     await Blog.findById(blogID).exec(async (err, blog) => {

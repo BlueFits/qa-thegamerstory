@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Link from "next/link";
 import Layout from "../../../components/Layout/Layout";
 import Typography from "../../../components/Typography/Typography";
@@ -6,11 +7,12 @@ import RoadMap from "../../../assets/svg/RoadMap.svg"
 import Image from "next/image";
 import { useRouter } from "next/router"
 import { serverURL } from "../../../config/Server"
+import { capitalizeFirstLetter } from "../../../helpers/stringHelpers";
 
 export const getServerSideProps = async (context) => {
     try {
         const res = await fetch(serverURL + "/api/hub/get_hub?hubName=" + context.query.story);
-       // const resBlog = await fetch(server);
+       const resBlog = await fetch(serverURL + "/api/blog/get_all_blogs");
         if (!res.ok) {
             const errData = await res.json();
             return {
@@ -18,11 +20,20 @@ export const getServerSideProps = async (context) => {
                     err: errData.error,
                 }
             };
+        } else if (!resBlog.ok) {
+            const resBlogErr = await resBlog.json();
+            return {
+                props: {
+                    err: resBlogErr.error,
+                },
+            };
         } else {
             const resData = await res.json();
+            const resBlogData = await resBlog.json();
             return {
                 props: {
                     hub: resData,
+                    blogs: resBlogData,
                 },
             };
 
@@ -34,7 +45,7 @@ export const getServerSideProps = async (context) => {
 };
 
 
-const Index = ({ hub }) => {
+const Index = ({ hub, blogs }) => {
 
     const router = useRouter();
 
@@ -46,9 +57,56 @@ const Index = ({ hub }) => {
                 <div className="mt-80">
                     <Typography type="s2" bold>TIMELINE</Typography>
                 </div>
-                <div className="flex justify-center flex-col" style={{ width: 1000, padding: "40px 20px"}}>
-                        
-                        <div className="flex flex-col justify-center items-center">
+                <div className="flex justify-center flex-col-reverse" style={{ width: 1000, padding: "40px 20px"}}>
+                        {hub.history.map((title, index) => {
+                            if (index === 0) {
+                                return (
+                                    <div key={"key:" + index} className="flex flex-col justify-center items-center">
+                                        <Typography style={{ marginBottom: 25 }} type="r1">{capitalizeFirstLetter(title)}</Typography>
+                                        <div className="flex">
+                                            {blogs.map((blog, index) => {
+                                                if (blog.historyTitle === title) {
+                                                    return (
+                                                        <Link key={"key:" + index} href={`/${story}/${blog._id}`}><a>
+                                                            <TimeLineBlock
+                                                                title={blog.blogTitle}
+                                                                src={blog.thumbnailImage}
+                                                            />
+                                                        </a></Link>
+                                                    );
+                                                }
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div>
+                                        <div key={"key:" + index} className="flex flex-col justify-center items-center">
+                                            <Typography style={{ marginBottom: 25 }} type="r1">{capitalizeFirstLetter(title)}</Typography>
+                                            <div className="flex">
+                                                {blogs.map((blog, index) => {
+                                                    if (blog.historyTitle === title) {
+                                                        return (
+                                                            <Link key={"key:" + index} href={`/${story}/${blog._id}`}><a>
+                                                                <TimeLineBlock
+                                                                    title={blog.blogTitle}
+                                                                    src={blog.thumbnailImage}
+                                                                />
+                                                            </a></Link>
+                                                        );
+                                                    }
+                                                })}
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-center my-9">
+                                            <Image src={RoadMap}/>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        })}
+                        {/* <div className="flex flex-col justify-center items-center">
                             <Typography style={{ marginBottom: 25 }} type="r1">PROLOGUE</Typography>
                             <div className="flex">
                                 <Link href={`/${story}/blogID`}><a>
@@ -59,7 +117,7 @@ const Index = ({ hub }) => {
                                 </a></Link>
                             </div>
                         </div>
-                    {/* <div className="flex justify-center my-4">
+                    <div className="flex justify-center my-4">
                         <Image src={RoadMap}/>
                     </div> */}
                 </div>
