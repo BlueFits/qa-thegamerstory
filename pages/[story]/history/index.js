@@ -5,8 +5,36 @@ import TimeLineBlock from "../../../components/TimeLineBlock/TimeLineBlock";
 import RoadMap from "../../../assets/svg/RoadMap.svg"
 import Image from "next/image";
 import { useRouter } from "next/router"
+import { serverURL } from "../../../config/Server"
 
-const Index = () => {
+export const getServerSideProps = async (context) => {
+    try {
+        const res = await fetch(serverURL + "/api/hub/get_hub?hubName=" + context.query.story);
+       // const resBlog = await fetch(server);
+        if (!res.ok) {
+            const errData = await res.json();
+            return {
+                props: {
+                    err: errData.error,
+                }
+            };
+        } else {
+            const resData = await res.json();
+            return {
+                props: {
+                    hub: resData,
+                },
+            };
+
+        }
+        
+    } catch(err) {
+        if (err) throw err;
+    }
+};
+
+
+const Index = ({ hub }) => {
 
     const router = useRouter();
 
@@ -19,6 +47,7 @@ const Index = () => {
                     <Typography type="s2" bold>TIMELINE</Typography>
                 </div>
                 <div className="flex justify-center flex-col" style={{ width: 1000, padding: "40px 20px"}}>
+                        
                         <div className="flex flex-col justify-center items-center">
                             <Typography style={{ marginBottom: 25 }} type="r1">PROLOGUE</Typography>
                             <div className="flex">
