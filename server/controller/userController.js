@@ -6,7 +6,7 @@ exports.getUser = async (req, res, next) => {
     const { id } = req.query;
     console.log(id);
     await User.findOne({ _id: id }).exec((err, user) => {
-        if (!user) res.status(409).send("User doesn't exist");
+        if (!user) res.status(409).send({ error: "User doesnt exist" });
         res.status(201).send(user);
     })
 };
@@ -24,7 +24,7 @@ exports.addUser = async (req, res, next) => {
     await User.findOne({ email }).exec((err, user) => {
         if (err) {return next(err);}
         if (user) {
-            res.status(409).send("User already exists");
+            res.status(409).send({ error: "User exists" });
         } else {
             userInstance.save((err, user) => {
                 if (err) {return next(err);};
@@ -36,10 +36,11 @@ exports.addUser = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(email, password);
     await User.findOne({ email }).exec((err, user) => {
         if (err) {return next(err);}
         if (!user) {
-            res.status(409).send("User doesn't exist");
+            res.status(409).send({ error: "user doesnt exist" });
         } else {
             bcrypt.compare(password, user.password).then((match) => {
                 if (match) {
@@ -51,7 +52,7 @@ exports.login = async (req, res, next) => {
 
                     res.status(200).send({
                         token,
-                        result: user,
+                        user,
                     });
 
                 } else {

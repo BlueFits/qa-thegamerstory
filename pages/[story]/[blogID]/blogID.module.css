@@ -1,8 +1,8 @@
 .blogImage {
-    height: 400px;
+    height: 450px;
     width: 100%;
     margin: 100px 0;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
 }

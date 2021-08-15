@@ -42,6 +42,10 @@ app.prepare().then(() => {
     server.use("/api/hub", hubRouter);
     server.use("/api/blog", blogRouter);
 
+    server.get("/", (req, res, next) => {
+        res.redirect("/auth/login");
+    });
+
     server.all('*', (req, res) => {
         return handle(req, res)
     })

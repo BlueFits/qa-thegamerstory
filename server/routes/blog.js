@@ -7,6 +7,8 @@ const { createBlogContent, getBlogContents } = require("../controller/blogConten
 //Blog Content
 router.post("/content/create", createBlogContent);
 
+router.get("/get_contents", getBlogContents);
+
 //Blogs
 
 router.post("/create", createBlog);
@@ -18,8 +20,5 @@ router.get("/get_latest", getLatestBlog);
 router.get("/get_chars", getChars);
 
 router.get("/get_all_blogs", getAllBlogs);
-
-router.get("/get_contents", getBlogContents);
-
 
 module.exports = router;
