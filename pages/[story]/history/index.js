@@ -36,7 +36,6 @@ export const getServerSideProps = async (context) => {
                     blogs: resBlogData,
                 },
             };
-
         }
         
     } catch(err) {
@@ -106,20 +105,6 @@ const Index = ({ hub, blogs }) => {
                                 );
                             }
                         })}
-                        {/* <div className="flex flex-col justify-center items-center">
-                            <Typography style={{ marginBottom: 25 }} type="r1">PROLOGUE</Typography>
-                            <div className="flex">
-                                <Link href={`/${story}/blogID`}><a>
-                                    <TimeLineBlock
-                                        title="Some Title"
-                                        src="https://image.shutterstock.com/image-photo/abstraction-futuristic-city-concrete-neon-260nw-1536232397.jpgs"
-                                    />
-                                </a></Link>
-                            </div>
-                        </div>
-                    <div className="flex justify-center my-4">
-                        <Image src={RoadMap}/>
-                    </div> */}
                 </div>
             </section>
         </Layout>
