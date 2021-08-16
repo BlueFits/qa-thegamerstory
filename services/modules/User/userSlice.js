@@ -29,19 +29,26 @@ export const authUser = createAsyncThunk("user/authUser", async (data) => {
 
 // Then, handle actions in your reducers:
 const userSlice = createSlice({
-  name: 'user',
-  initialState: { 
-      token: null,
-      user: {},
-   },
-  extraReducers: {
-    [authUser.fulfilled]: (state, action) => {
-        if (!action.payload.err) {
-            state.token = action.payload.token;
-            state.user = action.payload.user;
+    name: 'user',
+    initialState: { 
+        token: null,
+        user: {},
+    },
+    reducers: {
+        logout: (state) => {
+            state = {token: null, user: {},};
         }
-    }
-  },
+    },
+    extraReducers: {
+        [authUser.fulfilled]: (state, action) => {
+            if (!action.payload.err) {
+                state.token = action.payload.token;
+                state.user = action.payload.user;
+            }
+        }
+    },
 })
+
+export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;

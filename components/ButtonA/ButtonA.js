@@ -5,13 +5,13 @@ const styles={
     button: {
         backgroundColor: colors.primary,
         borderRadius: 50,
-        padding: "12px 30px",
+        // padding: "10px 30px",
     },
 };
 
-const ButtonA = ({ clickHandler, children }) => {
+const ButtonA = ({ clickHandler, children, disableElevation = false }) => {
     return (
-        <Button onClick={clickHandler} variant="contained" color="primary" size="large" style={styles.button}>
+        <Button disableElevation={disableElevation} onClick={clickHandler} variant="contained" color="primary" size="large" style={styles.button}>
             {children}
         </Button>        
     );
