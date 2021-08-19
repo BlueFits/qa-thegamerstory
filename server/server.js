@@ -11,6 +11,7 @@ app.prepare().then(() => {
     const cookieParser = require('cookie-parser');
     const logger = require('morgan');
     const mongoose = require("mongoose");
+    const cors = require("cors");
 
 
     const indexRouter = require('./routes/index');
@@ -36,6 +37,7 @@ app.prepare().then(() => {
     server.use(express.urlencoded({ extended: false }));
     server.use(cookieParser());
     server.use(express.static(path.join(__dirname, 'public')));
+    server.use(cors());
 
     server.use("/api", indexRouter);
     server.use("/api/user", userRouter);

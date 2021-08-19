@@ -2,19 +2,27 @@ import React, { useState } from "react";
 import Typography from "../Typography/Typography";
 import ButtonA from "../ButtonA/ButtonA";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../services/modules/User/userSlice";
 import { Menu, MenuItem } from "@material-ui/core";
 
 const Nav = ({ query }) => {
     const user = useSelector(state => state.user);
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = async (type) => {
         setAnchorEl(null);
+        switch (type) {
+            case "logout":
+                await dispatch(logout());
+                window.location.href="/";
+                break;
+        }
     };
 
     let userModule = (
@@ -27,9 +35,9 @@ const Nav = ({ query }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem style={{ width: 200 }} onClick={handleClose}>Profile</MenuItem>
+                <MenuItem style={{ width: 200 }} onClick={handleClose}>Create Story</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleClose.bind(this, "logout")}>Logout</MenuItem>
             </Menu>
         </li>
     );

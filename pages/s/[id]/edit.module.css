@@ -1,0 +1,17 @@
+.title {
+    width: 100%;
+    outline: none;
+    margin-bottom: 20px;
+    font-size: 3rem; 
+    overflow-wrap: break-word;
+    resize: none;
+}
+
+.text {
+    width: 100%;
+    outline: none;
+    font-size: 1.25rem;
+    resize: none;
+    margin-bottom: 25px;
+    line-height: 1.5rem;
+}

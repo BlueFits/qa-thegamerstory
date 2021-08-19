@@ -36,7 +36,8 @@ const userSlice = createSlice({
     },
     reducers: {
         logout: (state) => {
-            state = {token: null, user: {},};
+            state.token = null;
+            state.user = {};
         }
     },
     extraReducers: {

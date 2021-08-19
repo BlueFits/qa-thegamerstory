@@ -1,9 +1,8 @@
 import Banner from "../../../components/Banner/Banner";
 import Layout from "../../../components/Layout/Layout";
 import Typography from "../../../components/Typography/Typography";
-import Image from "next/image";
 import { serverURL } from "../../../config/Server";
-import styles from "./blogID.module.css";
+import ImageDisplay from "../../../components/ImageDisplay/ImageDisplay";
 
 export const getServerSideProps = async (context) => {
     try {
@@ -51,9 +50,11 @@ const Index = ({ err, blog }) => {
                                 return <Typography type="r2">{content.content}</Typography>
                             case "image": 
                                 return (
-                                    <div className={styles.blogImage} style={{ backgroundImage: `url(${content.content})`}} />
+                                    <ImageDisplay
+                                        content={content.content}
+                                    />
                                 );                        
-                            }
+                        }
                     })}
                 </div>
             </section>
