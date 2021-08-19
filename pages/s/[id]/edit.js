@@ -16,13 +16,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 const Edit = () => {
 
-    const [data, setData] = useState([
-        {
-            type:"image",
-            content: "https://checkpointxp.com/wp-content/uploads/2021/04/FFXIV_PUB_Patch5.5_25-e1619804511703.png"
-        },
-        { type:"create" }
-    ]);
+    const [data, setData] = useState([{ type:"create" }]);
     const [createText, setCreateText] = useState("");
     const [contentType, setContentType] = useState("text");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -76,14 +70,7 @@ const Edit = () => {
                     const keyDownHandler = (e) => {
                         if (e.key === "Enter") {
                             e.preventDefault();
-                            let update = [
-                                ...data, 
-                                // {
-                                //     type: contentType,
-                                //     content: createText,
-                                // },
-                                // { type: "create" }
-                            ];
+                            let update = [...data];
                             update.splice(index, 1, { type: contentType, content: createText }, { type: "create" });
                             setCreateText("");
                             setData(update);
@@ -135,13 +122,14 @@ const Edit = () => {
                         case "image": 
                                 return (
                                     <ImageDisplay
+                                        key={"key:" + index}
                                         onClose={deleteData}
                                         content={item.content}
                                     />
                                 );
                         case "create":
                             return (
-                                <div style={{ width: "100%" }} className="flex relative">
+                                <div key={index} style={{ width: "100%" }} className="flex relative">
                                     {createText === "" &&
                                         <div onClick={() => setIsDrawerOpen(true)} className="absolute flex justify-center items-center" style={{ left: -80, top: -15 }}>
                                             <Fab color="primary" aria-label="add">
