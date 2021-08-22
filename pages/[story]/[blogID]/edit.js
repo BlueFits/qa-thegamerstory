@@ -38,9 +38,6 @@ export const getServerSideProps = async (context) => {
 
 const Edit = ({ err, blog }) => {
 
-    if (err) {
-        return <h1>Id not available for edit</h1>;
-    }
     const router = useRouter();
     const [data, setData] = useState([...blog.blogContent, { type:"create" }]);
     const [createText, setCreateText] = useState("");
@@ -49,6 +46,10 @@ const Edit = ({ err, blog }) => {
     const [title, setTitle] = useState(blog.blogTitle);
 
     let typingTimerTitle;                
+
+    if (err) {
+        return <h1>Id not available for edit</h1>;
+    }
 
     const doneTyping = async (textContent, type) => {
         switch (type) {
