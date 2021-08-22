@@ -2,10 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 const { createBlog, getLatestBlog, getChars, updateBlog, getAllBlogs } = require("../controller/blogController");
-const { createBlogContent, getBlogContents } = require("../controller/blogContentController");
+const { createBlogContent, getBlogContents, updateBlogContent, removeBlogContent } = require("../controller/blogContentController");
 
 //Blog Content
 router.post("/content/create", createBlogContent);
+
+router.post("/content/update", updateBlogContent);
+
+router.post("/content/remove", removeBlogContent);
 
 router.get("/get_contents", getBlogContents);
 

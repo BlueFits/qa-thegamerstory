@@ -25,6 +25,35 @@ exports.createBlogContent = async (req, res, next) => {
     });
 };
 
+exports.updateBlogContent = async (req, res, next) => {
+    const { blogContentID, content, type } = req.body;
+    console.log(blogContentID, content, type);
+    const update = {
+        $set: {
+            content,
+            type,
+        },
+    };
+    BlogContent.findByIdAndUpdate(blogContentID, update, {}, (err, result) => {
+        if (err) {return next(err);}
+        res.status(200).send(result);
+    });
+}
+//error here
+exports.removeBlogContent = async (req, res, next) => {
+    const { blogContentID } = req.body;
+    console.log(blogContentID);
+    BlogContent.findByIdAndDelete(blogContentID, {}, (err, result) => {
+        if (err) {return next(err);}
+        if (!result) {
+            res.status(400).send({ error: "error in removing" })
+        } else {
+            console.log(result);
+            res.status(200).send(result);
+        }
+    });
+};
+
 exports.getBlogContents = async (req, res, next) => {
     const { blogID } = req.query;
     const ObjectId = require('mongoose').Types.ObjectId;

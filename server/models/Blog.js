@@ -11,6 +11,7 @@ const Blog = new Schema({
     historyTitle: { type: String, required: false },
     thumbnailImage: { type: String, required: false },
     createdAt: { type: Date, default: Date.now },
+    isPrivate: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model("Blog", Blog);

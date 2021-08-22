@@ -22,7 +22,8 @@ exports.getAllBlogs = async (req, res, next) => {
 }
 
 exports.updateBlog = async (req, res, next) => {
-    const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage } = req.body;
+    const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage, isPrivate } = req.body;
+    console.log(isPrivate);
     await Blog.findById(blogID).exec(async (err, blog) => {
         if (err) {return next(err);}
         if (!blog) {
@@ -37,6 +38,7 @@ exports.updateBlog = async (req, res, next) => {
                     blogTitle: blogTitle || blog.blogTitle,
                     historyTitle: historyTitle || blog.historyTitle,
                     thumbnailImage: thumbnailImage || blog.thumbnailImage,
+                    isPrivate: isPrivate === undefined ? blog.isPrivate : isPrivate,
                 },
             };
             await Blog.findByIdAndUpdate(blog._id, update, {}, (err, result) => {
