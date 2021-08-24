@@ -5,8 +5,11 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../services/modules/User/userSlice";
 import { Menu, MenuItem } from "@material-ui/core";
+import { serverURL } from "../../config/Server";
+import { useRouter } from "next/router";
 
 const Nav = ({ query }) => {
+    const router = useRouter();
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -15,13 +18,41 @@ const Nav = ({ query }) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = async (type) => {
+    const handleItemClick = async (type) => {
         setAnchorEl(null);
         switch (type) {
             case "logout":
                 await dispatch(logout());
                 window.location.href="/";
                 break;
+            case "create":
+                const createRes = await fetch(serverURL + "/api/blog/create", {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}),
+                });
+                const createResData = await createRes.json();
+                if (createRes.ok) {
+                    const addedBlogRes = await fetch(serverURL + "/api/user/update", {
+                        method: "POST",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userID: user.user._id,
+                            blogID: createResData._id,
+                        }),
+                    });
+                    if (addedBlogRes.ok) {
+                        //add story and href
+                        window.location.href = `/${router.query.story}/${createResData._id}/edit`
+                    }
+                }
+                break; 
         }
     };
 
@@ -33,11 +64,13 @@ const Nav = ({ query }) => {
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}
+                onClose={() => setAnchorEl(null)}
             >
-                <MenuItem style={{ width: 200 }} onClick={handleClose}>Create Story</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose.bind(this, "logout")}>Logout</MenuItem>
+                <MenuItem style={{ width: 200 }} onClick={handleItemClick.bind(this, "create")}>Create Story</MenuItem>
+                <MenuItem>
+                    <Link href={"/" + query[0] + "/myblogs"} passHref><a>My Blogs</a></Link>
+                </MenuItem>
+                <MenuItem onClick={handleItemClick.bind(this, "logout")}>Logout</MenuItem>
             </Menu>
         </li>
     );

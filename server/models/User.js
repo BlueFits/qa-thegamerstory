@@ -9,6 +9,7 @@ const UserSchema = new Schema({
     password: { type: String, required: true, trim: true },
     hub: [{ type: Schema.Types.ObjectId, ref: 'Hub' }],
     createdAt: { type: Date, default: Date.now },
+    blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
 });
 
 UserSchema.pre("save", function(next) {

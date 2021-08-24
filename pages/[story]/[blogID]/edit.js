@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Add, Close } from "@material-ui/icons";
+import { Add } from "@material-ui/icons";
 import ButtonA from "../../../components/ButtonA/ButtonA";
 import Typography from "../../../components/Typography/Typography";
 import ImageDisplay from "../../../components/ImageDisplay/ImageDisplay";
 import styles from "./edit.module.css";
 import TextareaAutosize from "react-textarea-autosize";
-import { Fab } from '@material-ui/core';
+import { Fab, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -13,11 +13,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { serverURL } from "../../../config/Server";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 export const getServerSideProps = async (context) => {
     try {
         const res = await fetch(serverURL + "/api/blog/get_contents?blogID=" + context.query.blogID);
+        const resHub = await fetch(serverURL + "/api/hub/get_hub?hubName=ffxiv");
         const data = await res.json();
+        const resHubData = await resHub.json();
         if (!res.ok) {
             return {
                 props: {
@@ -28,6 +31,7 @@ export const getServerSideProps = async (context) => {
             return {
                 props: {
                     blog: data,
+                    hub: resHubData,
                 }
             };
         }
@@ -36,19 +40,23 @@ export const getServerSideProps = async (context) => {
     }
 };
 
-const Edit = ({ err, blog }) => {
-
+const Edit = ({ err, blog, hub }) => {
+    const user = useSelector(state => state.user);
     const router = useRouter();
     const [data, setData] = useState([...blog.blogContent, { type:"create" }]);
     const [createText, setCreateText] = useState("");
     const [contentType, setContentType] = useState("text");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [title, setTitle] = useState(blog.blogTitle);
+    const [title, setTitle] = useState(blog.blogTitle || "");
+    const [type, setType] = useState(blog.blogType || "");
+    const [category, setCategory] = useState(blog.historyTitle || "");
 
     let typingTimerTitle;                
 
     if (err) {
         return <h1>Id not available for edit</h1>;
+    } else if (!user.token) {
+        return <h1>Restricted</h1>
     }
 
     const doneTyping = async (textContent, type) => {
@@ -136,14 +144,90 @@ const Edit = ({ err, blog }) => {
                     </ListItem>
                 </List>
             </Drawer>
-            <div style={{ width: "100vw", height: 80 }} className="bg-black flex justify-end items-center px-7">
-                <ButtonA clickHandler={publishHandler}>
-                    <Typography type="r2">Publish</Typography>
-                </ButtonA>
-                <div className="mx-2" />
-                <ButtonA clickHandler={cancelHandler} backgroundColor={"transparent"}>
-                    <Typography type="r2">Cancel</Typography>
-                </ButtonA>
+            <div style={{ width: "100vw", height: 80 }} className="bg-black flex justify-between items-center px-7">
+                <div>
+                    <ul className="flex">
+                        <li className="mr-8">
+                            <FormControl style={{ width: 120 }}>
+                                <InputLabel id="type-label">Type</InputLabel>
+                                <Select
+                                    labelId="type-label"
+                                    id="type"
+                                    value={type}
+                                    onChange={async (e) => {
+                                        const res = await fetch(serverURL + "/api/blog/udpate_blog", {
+                                            method: "POST",
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                blogID: router.query.blogID,
+                                                blogType: e.target.value,
+                                            }),
+                                        });                 
+                                        if (!res.ok) {
+                                            console.log(await res.json().error);
+                                        } else {
+                                            setType(e.target.value)
+                                        }                    
+                                    }}
+                                >
+                                    <MenuItem value={"char"}>Character</MenuItem>
+                                    <MenuItem value={"blog"}>Blog</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </li>
+                        <li className="mr-8">
+                            <FormControl style={{ width: 120 }}>
+                                <InputLabel id="category-label">Category</InputLabel>
+                                <Select
+                                    labelId="category-label"
+                                    id="category"
+                                    value={category}
+                                    onChange={async (e) => {
+                                        const res = await fetch(serverURL + "/api/blog/udpate_blog", {
+                                            method: "POST",
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                blogID: router.query.blogID,
+                                                historyTitle: e.target.value,
+                                            }),
+                                        });
+                                        if (!res.ok) {
+                                            const errData = await res.json();
+                                            console.log(errData.error);
+                                        } else {
+                                            setCategory(e.target.value)
+                                        }
+                                    }}
+                                >
+                                    {hub.history.map((item, index) => {
+                                        return (
+                                            <MenuItem 
+                                                key={index} 
+                                                value={item}
+                                            >{item}</MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="flex">
+                    <ButtonA clickHandler={publishHandler}>
+                        <Typography type="r2">Publish</Typography>
+                    </ButtonA>
+                    <div className="mx-2" />
+                    <ButtonA clickHandler={cancelHandler} backgroundColor={"transparent"}>
+                        <Typography type="r2">Cancel</Typography>
+                    </ButtonA>
+                </div>
             </div>
 
             <div style={{ width: 800 }} className="mt-12 flex flex-col justify-center items-center">

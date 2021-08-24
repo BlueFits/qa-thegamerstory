@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const Blog = new Schema({
-    blogType: { type: String, required: true, enum: ["char", "blog"]},
-    headerTitle: { type: String, required: true },
-    headerSub: { type: String, required: true },
-    headerImage: { type: String, required: false },
-    blogTitle: { type: String, required: true },
+    blogType: { type: String, required: true, enum: ["char", "blog"], default: "blog"},
+    headerTitle: { type: String, default: "" },
+    headerSub: { type: String, default: "" },
+    headerImage: { type: String, default: "" },
+    blogTitle: { type: String, default: "" },
     blogContent: [{ type: Schema.Types.ObjectId, ref: 'BlogContent' }],
     historyTitle: { type: String, required: false },
     thumbnailImage: { type: String, required: false },

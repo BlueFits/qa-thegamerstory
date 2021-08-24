@@ -3,7 +3,15 @@ const Hub = require("../models/Hub");
 
 exports.createBlog = async (req, res, next) => {
     const { blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage } = req.body;
-    const blogInstance = new Blog({ blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage });
+    const blogInstance = new Blog({ 
+        blogType, 
+        headerImage, 
+        headerTitle, 
+        headerSub, 
+        blogTitle, 
+        historyTitle, 
+        thumbnailImage 
+    });
     blogInstance.save((err, blog) => {
         if (err) {return next(err);}
         res.status(201).send(blog);
@@ -23,7 +31,6 @@ exports.getAllBlogs = async (req, res, next) => {
 
 exports.updateBlog = async (req, res, next) => {
     const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage, isPrivate } = req.body;
-    console.log(isPrivate);
     await Blog.findById(blogID).exec(async (err, blog) => {
         if (err) {return next(err);}
         if (!blog) {

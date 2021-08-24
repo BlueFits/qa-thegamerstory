@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 exports.getUser = async (req, res, next) => {
     const { id } = req.query;
     console.log(id);
-    await User.findOne({ _id: id }).exec((err, user) => {
+    await User.findOne({ _id: id }).populate("blogs").exec((err, user) => {
         if (!user) res.status(409).send({ error: "User doesnt exist" });
         res.status(201).send(user);
     })
@@ -29,6 +29,27 @@ exports.addUser = async (req, res, next) => {
             userInstance.save((err, user) => {
                 if (err) {return next(err);};
                 res.status(201).send(user);
+            });
+        }
+    });
+};
+
+exports.updateUser = async (req, res, next) => {
+    const { userID, blogID } = req.body;
+    console.log(userID, blogID);
+    await User.findById(userID).exec(async (err, user) => {
+        if (err) {return next(err);}
+        if (!user) {
+            res.status(400).send({ error: "User not found" });
+        } else {
+            const update = {
+                $set: {
+                    blogs: blogID ? [...user.blogs, blogID] : [...user.blogs],
+                }
+            }
+            await User.findByIdAndUpdate(user._id, update, {}, (err, user) => {
+                if (err) {return next(err);}
+                res.status(200).send(user);
             });
         }
     });

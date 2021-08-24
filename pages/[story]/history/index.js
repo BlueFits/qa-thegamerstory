@@ -80,8 +80,8 @@ const Index = ({ hub, blogs }) => {
                                 );
                             } else {
                                 return (
-                                    <div>
-                                        <div key={"key:" + index} className="flex flex-col justify-center items-center">
+                                    <div key={"key:" + index}>
+                                        <div className="flex flex-col justify-center items-center">
                                             <Typography style={{ marginBottom: 25 }} type="r1">{capitalizeFirstLetter(title)}</Typography>
                                             <div className="flex">
                                                 {blogs.map((blog, index) => {
