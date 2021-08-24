@@ -17,35 +17,39 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: 1000,
-    backgroundColor: theme.palette.background.paper,
-    color: "#fff"
-  },
-}));
+    root: {
+      width: 1000,
+      backgroundColor: theme.palette.background.paper,
+      color: "#fff"
+    },
+  }));
 
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
 
-const index = () => {
+const Index = () => {
   const classes = useStyles();
   const user = useSelector(state => state.user);
   const router = useRouter();
   const [blogs, setBlogs] = useState([]);
 
-  useEffect(async () => {
-    try {
-        const response = await fetch(serverURL + "/api/user/get_data?id=" + user.user._id);
-        const responseData = await response.json();
-        if (!response.ok) {
-            alert("error");
-        } else {
-            setBlogs(responseData.blogs.reverse());
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+            const response = await fetch(serverURL + "/api/user/get_data?id=" + user.user._id);
+            const responseData = await response.json();
+            if (!response.ok) {
+                alert("error");
+            } else {
+                setBlogs(responseData.blogs.reverse());
+            }
+        } catch(err) {
+            if (err) throw err;
         }
-    } catch(err) {
-        if (err) throw err;
-    }
+      }
+
+      fetchData();
   }, []);
 
   return (
@@ -88,4 +92,4 @@ const index = () => {
   );
 }
 
-export default index;
+export default Index;
