@@ -12,6 +12,7 @@ const Blog = new Schema({
     thumbnailImage: { type: String, required: false },
     createdAt: { type: Date, default: Date.now },
     isPrivate: { type: Boolean, default: true },
+    hub: { type: String, required: true },
 });
 
 module.exports = mongoose.model("Blog", Blog);

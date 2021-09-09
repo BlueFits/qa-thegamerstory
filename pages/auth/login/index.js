@@ -86,6 +86,7 @@ export default function Home() {
             </div>
           <div className="flex flex-col items-center" style={{ marginTop: 50 }}>
             <Button onClick={clickHandler} variant="contained" color="primary" size="large" style={{ backgroundColor: colors.primary, height: 50, width: 180, borderRadius: 50, marginBottom: 10 }}>Enter</Button>        
+            <Button onClick={() => router.push("/auth/register")} variant="contained" color="primary" size="large" style={{ backgroundColor: colors.primary, height: 50, width: 180, borderRadius: 50, marginBottom: 10 }}>Register</Button>        
             <Button onClick={() => router.push("/ffxiv")} size="large" style={{  height: 50, width: 180, borderRadius: 50, color: "#fff" }}>SKIP</Button>     
           </div>   
         </div>

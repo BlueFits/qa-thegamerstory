@@ -64,15 +64,19 @@ const Index = ({ hub, blogs }) => {
                                         <Typography style={{ marginBottom: 25 }} type="r1">{capitalizeFirstLetter(title)}</Typography>
                                         <div className="flex">
                                             {blogs.map((blog, index) => {
-                                                if ((blog.historyTitle === title) && (blog.isPrivate === false)) {
-                                                    return (
-                                                        <Link key={"key:" + index} href={`/${story}/${blog._id}`}><a>
-                                                            <TimeLineBlock
-                                                                title={blog.blogTitle}
-                                                                src={blog.thumbnailImage}
-                                                            />
-                                                        </a></Link>
-                                                    );
+                                                if (blog.hub === router.query.story) {
+                                                    if ((blog.historyTitle === title) && (blog.isPrivate === false)) {
+                                                        return (
+                                                            <Link key={"key:" + index} href={`/${story}/${blog._id}`}>
+                                                                <a>
+                                                                    <TimeLineBlock
+                                                                        title={blog.blogTitle}
+                                                                        src={blog.thumbnailImage}
+                                                                    />
+                                                                </a>
+                                                            </Link>
+                                                        );
+                                                    }
                                                 }
                                             })}
                                         </div>

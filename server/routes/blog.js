@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { createBlog, getLatestBlog, getChars, updateBlog, getAllBlogs } = require("../controller/blogController");
+const { createBlog, getLatestBlog, getChars, updateBlog, getAllBlogs, deleteBlog } = require("../controller/blogController");
 const { createBlogContent, getBlogContents, updateBlogContent, removeBlogContent } = require("../controller/blogContentController");
 
 //Blog Content
@@ -18,6 +18,8 @@ router.get("/get_contents", getBlogContents);
 router.post("/create", createBlog);
 
 router.post("/udpate_blog", updateBlog);
+
+router.post("/delete", deleteBlog);
 
 router.get("/get_latest", getLatestBlog);
 

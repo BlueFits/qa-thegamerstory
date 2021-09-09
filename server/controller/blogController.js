@@ -2,7 +2,7 @@ const Blog = require("../models/Blog");
 const Hub = require("../models/Hub");
 
 exports.createBlog = async (req, res, next) => {
-    const { blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage } = req.body;
+    const { blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage, hub } = req.body;
     const blogInstance = new Blog({ 
         blogType, 
         headerImage, 
@@ -10,7 +10,8 @@ exports.createBlog = async (req, res, next) => {
         headerSub, 
         blogTitle, 
         historyTitle, 
-        thumbnailImage 
+        thumbnailImage,
+        hub,
     });
     blogInstance.save((err, blog) => {
         if (err) {return next(err);}
@@ -30,7 +31,7 @@ exports.getAllBlogs = async (req, res, next) => {
 }
 
 exports.updateBlog = async (req, res, next) => {
-    const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage, isPrivate } = req.body;
+    const { blogID, blogType, headerImage, headerTitle, headerSub, blogTitle, historyTitle, thumbnailImage, isPrivate, hub } = req.body;
     await Blog.findById(blogID).exec(async (err, blog) => {
         if (err) {return next(err);}
         if (!blog) {
@@ -46,6 +47,7 @@ exports.updateBlog = async (req, res, next) => {
                     historyTitle: historyTitle || blog.historyTitle,
                     thumbnailImage: thumbnailImage || blog.thumbnailImage,
                     isPrivate: isPrivate === undefined ? blog.isPrivate : isPrivate,
+                    hub: hub || blog.hub,
                 },
             };
             await Blog.findByIdAndUpdate(blog._id, update, {}, (err, result) => {
@@ -71,6 +73,19 @@ exports.getLatestBlog = async (req, res, next) => {
                     res.status(200).send(blog);
                 }
             });
+        }
+    });
+}
+
+exports.deleteBlog = async (req, res, next) => {
+    const { blogID } = req.body;
+    console.log(blogID);
+    await Blog.findByIdAndDelete(blogID).exec((err, result) => {
+        if (err) {return next(err);}
+        if (!result) {
+            res.status(400).send({ error: "Blog is not found" });
+        } else {
+            res.status(200).send(result);
         }
     });
 }

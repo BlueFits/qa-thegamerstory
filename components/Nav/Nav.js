@@ -32,7 +32,9 @@ const Nav = ({ query }) => {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({}),
+                    body: JSON.stringify({
+                        hub: router.query.story,
+                    }),
                 });
                 const createResData = await createRes.json();
                 if (createRes.ok) {

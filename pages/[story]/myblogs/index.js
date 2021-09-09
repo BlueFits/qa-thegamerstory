@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Delete } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,6 +53,29 @@ const Index = () => {
       fetchData();
   }, []);
 
+  const deleteHandler = async (blogID) => {
+    const response = await fetch(serverURL + "/api/blog/delete", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            blogID,
+        }),
+    })
+    const responseData = await response.json();
+    if (!response.ok) {
+        alert(responseData.error);
+    } else {
+        const update = [...blogs];
+        const updatedList = update.filter(blog => blog._id !== blogID);
+        setBlogs(updatedList);
+        console.log("Successfully deleted");
+        console.log(responseData);
+    }
+  };
+
   return (
     <Layout>
         <div className={pageStyles.pageContainer}>
@@ -61,28 +85,40 @@ const Index = () => {
             <div className={classes.root}>
                 <List component="nav" aria-label="main mailbox folders">
                     {blogs.map((blog, index) => {
-                        if (blog.blogTitle === "") {
-                            return (
-                                <ListItem button>
-                                    <Link href={`/${router.query.story}/${blog._id}/edit`}>
-                                        <a>
-                                            <ListItemText primary={"No Title"} />
-                                            <ListItemText primary={`Date Created: ${moment(blog.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`} />
-                                        </a>
-                                    </Link>
-                                </ListItem>
-                            );
-                        } else {
-                            return (
-                                <ListItem button>
-                                    <Link href={`/${router.query.story}/${blog._id}/edit`}>
-                                        <a>
-                                            <ListItemText primary={blog.blogTitle} />
-                                            <ListItemText primary={`Date Created: ${moment(blog.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`} />
-                                        </a>
-                                    </Link>
-                                </ListItem>
-                            );
+                        if (blog.hub === router.query.story) {
+                            if (blog.blogTitle === "") {
+                                return (
+                                    <ListItem button>
+                                        <div className="flex justify-between items-center w-full">
+                                            <Link href={`/${router.query.story}/${blog._id}/edit`}>
+                                                <a className="w-full" >
+                                                    <ListItemText primary={"No Title"} />
+                                                    <ListItemText primary={`Date Created: ${moment(blog.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`} />
+                                                </a>
+                                            </Link> 
+                                            <div onClick={deleteHandler.bind(this, blog._id)} style={{ width: 50 }} className="flex justify-center items-center">
+                                                <Delete />
+                                            </div>
+                                        </div>
+                                    </ListItem>
+                                );
+                            } else {
+                                return (
+                                    <ListItem button>
+                                        <div className="flex justify-between items-center w-full">
+                                            <Link href={`/${router.query.story}/${blog._id}/edit`}>
+                                                <a className="w-full" >
+                                                    <ListItemText primary={blog.blogTitle} />
+                                                    <ListItemText primary={`Date Created: ${moment(blog.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`} />
+                                                </a>
+                                            </Link>
+                                            <div onClick={deleteHandler.bind(this, blog._id)} style={{ width: 50 }} className="flex justify-center items-center">
+                                                <Delete />
+                                            </div>
+                                        </div>
+                                    </ListItem>
+                                );
+                            }
                         }
                     })}
                 </List>

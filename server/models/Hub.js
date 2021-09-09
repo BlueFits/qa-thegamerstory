@@ -7,6 +7,7 @@ const HubSchema = new Schema({
     image: { type: String, required: true},
     name: { type: String, required: true, lowercase: true },
     createdAt: { type: Date, default: Date.now },
+    users: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 module.exports = mongoose.model("Hub", HubSchema);
