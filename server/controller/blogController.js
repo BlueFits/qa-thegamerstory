@@ -50,7 +50,7 @@ exports.updateBlog = async (req, res, next) => {
                     hub: hub || blog.hub,
                 },
             };
-            await Blog.findByIdAndUpdate(blog._id, update, {}, (err, result) => {
+            await Blog.findByIdAndUpdate(blog._id, update, { new: true }, (err, result) => {
                 if (err) {return next(err);}
                 res.status(200).send(result);
             });

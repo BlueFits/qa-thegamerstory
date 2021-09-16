@@ -5,7 +5,7 @@ import Typography from "../../../components/Typography/Typography";
 import ImageDisplay from "../../../components/ImageDisplay/ImageDisplay";
 import styles from "./edit.module.css";
 import TextareaAutosize from "react-textarea-autosize";
-import { Fab, Select, FormControl, MenuItem, InputLabel, Button } from '@material-ui/core';
+import { Fab, Select, FormControl, MenuItem, InputLabel, Button, responsiveFontSizes } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -49,11 +49,18 @@ const Edit = ({ err, blog, hub }) => {
     const [createText, setCreateText] = useState("");
     const [contentType, setContentType] = useState("text");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [headerImageValue, setHeaderImageValue] = useState(blog.headerImage || "");
     const [title, setTitle] = useState(blog.blogTitle || "");
     const [type, setType] = useState(blog.blogType || "");
     const [category, setCategory] = useState(blog.historyTitle || "");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [headerImageValue, setHeaderImageValue] = useState(blog.headerImage || "");
+    const [headerTitle, setHeaderTitle] = useState(blog.headerTitle || "");
+    const [headerSub, setHeaderSub] = useState(blog.headerSub || "");
+    const [bannerValue, setBannerValue] = useState({
+        uri: blog.headerImage || "https://flyfishinginnewzealand.com/wp-content/uploads/2020/12/Placeholder-1920x1080-1.jpg",
+        title: blog.headerTitle || "",
+        text: blog.headerSub || "",
+    });
 
     let typingTimerTitle;                
 
@@ -143,6 +150,35 @@ const Edit = ({ err, blog, hub }) => {
         history.back();
     };
 
+    const headerSubmitHandler = async () => {
+       const response = await fetch(serverURL + "/api/blog/udpate_blog", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                blogID: router.query.blogID,
+                headerImage: headerImageValue, 
+                headerTitle, 
+                headerSub,
+            }),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+            console.log(responseData.error);
+        } else {
+            console.log(responseData);
+            setBannerValue({
+                uri: responseData.headerImage === "" ? bannerValue.uri : responseData.headerImage,
+                title: responseData.headerTitle,
+                text: responseData.headerSub,
+            });
+            alert("Succesfully modified header");
+            setIsModalOpen(false);
+        }
+    }
+
     return (
         <div className="flex flex-col items-center" style={{ width: "100vw" }}>
             <Modal
@@ -167,17 +203,17 @@ const Edit = ({ err, blog, hub }) => {
                         <input 
                             className={styles.headerInputs} 
                             placeholder="Header Tittle" 
-                            value={headerImageValue} 
-                            onChange={e => setHeaderImageValue(e.target.value)}
+                            value={headerTitle} 
+                            onChange={e => setHeaderTitle(e.target.value)}
                         />
                         <input 
                             className={styles.headerInputs} 
                             placeholder="Sub header" 
-                            value={headerImageValue} 
-                            onChange={e => setHeaderImageValue(e.target.value)}
+                            value={headerSub} 
+                            onChange={e => setHeaderSub(e.target.value)}
                         />
                         <div className="w-full flex justify-end">
-                            <ButtonA>
+                            <ButtonA clickHandler={headerSubmitHandler}>
                                 <Typography type="r2">Update</Typography>
                             </ButtonA>
                         </div>
@@ -281,9 +317,9 @@ const Edit = ({ err, blog, hub }) => {
                 </div>
             </div>
             <Banner
-                uri={"https://checkpointxp.com/wp-content/uploads/2021/04/FFXIV_PUB_Patch5.5_25-e1619804511703.png"}
-                title={"asdasd"}
-                text={"ASDASDasd"}
+                uri={bannerValue.uri}
+                title={bannerValue.title}
+                text={bannerValue.text}
             />
             <div style={{ width: 800 }} className="mt-12 flex flex-col justify-center items-center">
                 <div className="flex" style={{ width: "100%" }}>
