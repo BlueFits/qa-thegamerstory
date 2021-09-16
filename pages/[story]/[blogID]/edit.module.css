@@ -7,6 +7,16 @@
     resize: none;
 }
 
+.headerInputs {
+    width: 100%;
+    outline: none;
+    margin-bottom: 30px;
+    font-size: 1.25rem; 
+    overflow-wrap: break-word;
+    resize: none;
+    border-bottom: 1px solid grey;
+}
+
 .text {
     width: 100%;
     outline: none;

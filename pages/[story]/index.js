@@ -32,6 +32,7 @@ const Index = ({ err, blog }) => {
     const router = useRouter();
 
     if (err) {
+        router.push(`/${router.query.story}/myblogs`);
         return <div><h1>No blogs yet</h1></div>;
     } else if (router.query.story !== "ffxiv") {
         return <Typography color="black">Not Found</Typography>;

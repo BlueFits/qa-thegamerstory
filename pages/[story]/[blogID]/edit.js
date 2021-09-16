@@ -5,7 +5,7 @@ import Typography from "../../../components/Typography/Typography";
 import ImageDisplay from "../../../components/ImageDisplay/ImageDisplay";
 import styles from "./edit.module.css";
 import TextareaAutosize from "react-textarea-autosize";
-import { Fab, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core';
+import { Fab, Select, FormControl, MenuItem, InputLabel, Button } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -14,6 +14,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { serverURL } from "../../../config/Server";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Banner from "../../../components/Banner/Banner";
+import Modal from '@material-ui/core/Modal';
 
 export const getServerSideProps = async (context) => {
     try {
@@ -47,9 +49,11 @@ const Edit = ({ err, blog, hub }) => {
     const [createText, setCreateText] = useState("");
     const [contentType, setContentType] = useState("text");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [headerImageValue, setHeaderImageValue] = useState(blog.headerImage || "");
     const [title, setTitle] = useState(blog.blogTitle || "");
     const [type, setType] = useState(blog.blogType || "");
     const [category, setCategory] = useState(blog.historyTitle || "");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     let typingTimerTitle;                
 
@@ -107,6 +111,10 @@ const Edit = ({ err, blog, hub }) => {
                 break;
             case "text":
                 setContentType("text");
+                break;
+            case "imageHeader":
+                setIsModalOpen(true);
+                break;;
         }
     };
 
@@ -137,8 +145,51 @@ const Edit = ({ err, blog, hub }) => {
 
     return (
         <div className="flex flex-col items-center" style={{ width: "100vw" }}>
+            <Modal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div style={{ width: 500, height: 450, left: "50%", top: "30%", transform: "translate(-50%, -30%)" }} className="bg-white absolute flex flex-col justify-center items-center">
+                    <div className="mb-4">
+                        <Typography color="black">
+                            Header Settings
+                        </Typography>
+                    </div>
+                    <div className="flex-col justify-center py-4" style={{ width: "80%" }}>
+                        <input 
+                            className={styles.headerInputs} 
+                            placeholder="Header Image" 
+                            value={headerImageValue} 
+                            onChange={e => setHeaderImageValue(e.target.value)}
+                        />
+                        <input 
+                            className={styles.headerInputs} 
+                            placeholder="Header Tittle" 
+                            value={headerImageValue} 
+                            onChange={e => setHeaderImageValue(e.target.value)}
+                        />
+                        <input 
+                            className={styles.headerInputs} 
+                            placeholder="Sub header" 
+                            value={headerImageValue} 
+                            onChange={e => setHeaderImageValue(e.target.value)}
+                        />
+                        <div className="w-full flex justify-end">
+                            <ButtonA>
+                                <Typography type="r2">Update</Typography>
+                            </ButtonA>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
             <Drawer anchor={"bottom"} open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
                 <List>
+                    <ListItem onClick={contentTypeHandler.bind(this, "imageHeader")} button>
+                        <ListItemText primary={"Edit header"} />
+                    </ListItem>
+                    <Divider style={{ margin: "15px 0" }}/>
                     <ListItem onClick={contentTypeHandler.bind(this, "image")} button>
                         <ListItemText primary={"Add Image"} />
                     </ListItem>
@@ -229,7 +280,11 @@ const Edit = ({ err, blog, hub }) => {
                     </ButtonA>
                 </div>
             </div>
-
+            <Banner
+                uri={"https://checkpointxp.com/wp-content/uploads/2021/04/FFXIV_PUB_Patch5.5_25-e1619804511703.png"}
+                title={"asdasd"}
+                text={"ASDASDasd"}
+            />
             <div style={{ width: 800 }} className="mt-12 flex flex-col justify-center items-center">
                 <div className="flex" style={{ width: "100%" }}>
                     <input 
