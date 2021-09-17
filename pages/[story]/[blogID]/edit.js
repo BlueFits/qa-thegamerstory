@@ -56,6 +56,8 @@ const Edit = ({ err, blog, hub }) => {
     const [headerImageValue, setHeaderImageValue] = useState(blog.headerImage || "");
     const [headerTitle, setHeaderTitle] = useState(blog.headerTitle || "");
     const [headerSub, setHeaderSub] = useState(blog.headerSub || "");
+    const [thumbnailImageValue, setThumbNailImageValue] = useState(blog.thumbnailImage || "");
+    const [thumbnailModal, setThumbnailModal] = useState(false);
     const [bannerValue, setBannerValue] = useState({
         uri: blog.headerImage || "https://flyfishinginnewzealand.com/wp-content/uploads/2020/12/Placeholder-1920x1080-1.jpg",
         title: blog.headerTitle || "",
@@ -122,6 +124,9 @@ const Edit = ({ err, blog, hub }) => {
             case "imageHeader":
                 setIsModalOpen(true);
                 break;;
+            case "thumbnail":
+                setThumbnailModal(true);
+                break;
         }
     };
 
@@ -166,9 +171,8 @@ const Edit = ({ err, blog, hub }) => {
         });
         const responseData = await response.json();
         if (!response.ok) {
-            console.log(responseData.error);
+            console.error(responseData.error);
         } else {
-            console.log(responseData);
             setBannerValue({
                 uri: responseData.headerImage === "" ? bannerValue.uri : responseData.headerImage,
                 title: responseData.headerTitle,
@@ -176,6 +180,29 @@ const Edit = ({ err, blog, hub }) => {
             });
             alert("Succesfully modified header");
             setIsModalOpen(false);
+        }
+    }
+
+    const thumbnailSubmitHandler = async () => {
+        const response = await fetch(serverURL + "/api/blog/udpate_blog", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                blogID: router.query.blogID,
+                thumbnailImage: thumbnailImageValue,
+            }),
+        })
+
+        const responseData = await response.json();
+        if (!response.ok) {
+            console.error(responseData.error);
+        } else {
+            setThumbNailImageValue(responseData.thumbnailImage);
+            alert("Succesfully changed thumbnail");
+            setThumbnailModal(false);
         }
     }
 
@@ -213,6 +240,10 @@ const Edit = ({ err, blog, hub }) => {
                             onChange={e => setHeaderSub(e.target.value)}
                         />
                         <div className="w-full flex justify-end">
+                            <ButtonA clickHandler={() => setIsModalOpen(false)}>
+                                <Typography type="r2">Cancel</Typography>
+                            </ButtonA>
+                            <div className="mx-2" />
                             <ButtonA clickHandler={headerSubmitHandler}>
                                 <Typography type="r2">Update</Typography>
                             </ButtonA>
@@ -220,14 +251,43 @@ const Edit = ({ err, blog, hub }) => {
                     </div>
                 </div>
             </Modal>
+            <Modal
+                open={thumbnailModal}
+                onClose={() => setThumbnailModal(false)}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div style={{ width: 500, height: 450, left: "50%", top: "30%", transform: "translate(-50%, -30%)" }} className="bg-white absolute flex flex-col justify-center items-center">
+                    <div className="flex-col justify-center py-4" style={{ width: "80%" }}>
+                        <input 
+                            className={styles.headerInputs} 
+                            placeholder="Thumbnail image" 
+                            value={thumbnailImageValue} 
+                            onChange={e => setThumbNailImageValue(e.target.value)}
+                        />
+                        <div className="w-full flex justify-end">
+                            <ButtonA clickHandler={() => setThumbnailModal(false)}>
+                                <Typography type="r2">Cancel</Typography>
+                            </ButtonA>
+                            <div className="mx-2" />
+                            <ButtonA clickHandler={thumbnailSubmitHandler}>
+                                <Typography type="r2">Update</Typography>
+                            </ButtonA>
+                        </div>
+                    </div>
+                </div>    
+            </Modal>
             <Drawer anchor={"bottom"} open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
                 <List>
+                    <ListItem onClick={contentTypeHandler.bind(this, "thumbnail")} button>
+                        <ListItemText primary={"Update thumbnail Image"} />
+                    </ListItem>
                     <ListItem onClick={contentTypeHandler.bind(this, "imageHeader")} button>
                         <ListItemText primary={"Edit header"} />
                     </ListItem>
                     <Divider style={{ margin: "15px 0" }}/>
                     <ListItem onClick={contentTypeHandler.bind(this, "image")} button>
-                        <ListItemText primary={"Add Image"} />
+                        <ListItemText primary={"Add blog image"} />
                     </ListItem>
                 </List>
             </Drawer>

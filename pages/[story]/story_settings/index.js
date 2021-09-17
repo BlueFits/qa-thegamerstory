@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/Inbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
-import pageStyles from "./myblogs.module.css";
+import pageStyles from "./story_settings.module.css";
 import Layout from "../../../components/Layout/Layout";
 import Typography from '../../../components/Typography/Typography';
 import { serverURL } from '../../../config/Server';
@@ -121,6 +121,16 @@ const Index = () => {
                             }
                         }
                     })}
+                </List>
+            </div>
+            <div style={{width: 1000}} className="mt-12 mb-8 flex justify-start items-center">
+                <Typography>Hub Settings</Typography>
+            </div>
+            <div className={classes.root}>
+                <List component="nav" aria-label="main mailbox folders">
+                    <ListItem>
+                        <ListItemText>Timeline</ListItemText>
+                    </ListItem>
                 </List>
             </div>
         </div>

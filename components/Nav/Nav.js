@@ -68,9 +68,9 @@ const Nav = ({ query }) => {
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
             >
-                <MenuItem style={{ width: 200 }} onClick={handleItemClick.bind(this, "create")}>Create Story</MenuItem>
+                <MenuItem style={{ width: 200 }} onClick={handleItemClick.bind(this, "create")}>Create Story</MenuItem> 
                 <MenuItem>
-                    <Link href={"/" + query[0] + "/myblogs"} passHref><a>My Blogs</a></Link>
+                    <Link href={"/" + query[0] + "/story_settings"} passHref><a>Story Settings</a></Link>
                 </MenuItem>
                 <MenuItem onClick={handleItemClick.bind(this, "logout")}>Logout</MenuItem>
             </Menu>
