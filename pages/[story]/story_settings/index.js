@@ -10,12 +10,12 @@ import pageStyles from "./story_settings.module.css";
 import Layout from "../../../components/Layout/Layout";
 import Typography from '../../../components/Typography/Typography';
 import { serverURL } from '../../../config/Server';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from 'react';
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Delete } from "@material-ui/icons";
+import { Delete, Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,11 +25,31 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
+export const getServerSideProps = async (context) => {
+    try {
+        const res = await fetch(serverURL + "/api/hub/get_hub?hubName=" + context.query.story);
+        if (!res.ok) {
+            const errData = await res.json();
+            return {
+                props: {
+                    err: errData.error,
+                },
+            };
+        } else {
+            const resData = await res.json();
+            console.log(resData);
+            return {
+                props: {
+                    hub: resData,
+                },
+            };
+        }
+    } catch(err) {
+        if (err) throw err;
+    }
+};
 
-const Index = () => {
+const Index = ({ hub }) => {
   const classes = useStyles();
   const user = useSelector(state => state.user);
   const router = useRouter();
@@ -49,7 +69,7 @@ const Index = () => {
             if (err) throw err;
         }
       }
-
+      console.log("!!!", hub);
       fetchData();
   }, []);
 
@@ -129,8 +149,23 @@ const Index = () => {
             <div className={classes.root}>
                 <List component="nav" aria-label="main mailbox folders">
                     <ListItem>
-                        <ListItemText>Timeline</ListItemText>
+                        <ListItemText><strong>Timeline</strong></ListItemText>
+                        <div onClick={() => alert()} style={{ width: 50 }} className="flex justify-center items-center">
+                            <Add />
+                        </div>
                     </ListItem>
+                    {hub.history.map(item => (
+                        <ListItem button>
+                            <div className="flex justify-between items-center w-full">
+                                <a className="w-full" >
+                                    <ListItemText primary={item} />
+                                </a>
+                                <div onClick={() => alert()} style={{ width: 50 }} className="flex justify-center items-center">
+                                    <Delete />
+                                </div>
+                            </div>
+                        </ListItem>
+                    ))}
                 </List>
             </div>
         </div>
