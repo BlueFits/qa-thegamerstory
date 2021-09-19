@@ -154,8 +154,8 @@ const Index = ({ hub }) => {
                             <Add />
                         </div>
                     </ListItem>
-                    {hub.history.map(item => (
-                        <ListItem button>
+                    {hub.history.map((item, index) => (
+                        <ListItem key={index} button>
                             <div className="flex justify-between items-center w-full">
                                 <a className="w-full" >
                                     <ListItemText primary={item} />
