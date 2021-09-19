@@ -16,6 +16,9 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Delete, Add } from "@material-ui/icons";
+import TextField from '@mui/material/TextField';
+import Modal from "../../../components/Modal/Modal";
+import ButtonA from '../../../components/ButtonA/ButtonA';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,6 +57,9 @@ const Index = ({ hub }) => {
   const user = useSelector(state => state.user);
   const router = useRouter();
   const [blogs, setBlogs] = useState([]);
+  const [historyTitles, setHistoryTitles] = useState(hub.history || []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [historyTextTitle, setHistoryTextTitle] = useState("");
 
   useEffect(() => {
       const fetchData = async () => {
@@ -96,8 +102,71 @@ const Index = ({ hub }) => {
     }
   };
 
+  const deleteHistoryHandler = async (data) => {
+    const res = await fetch(serverURL + "/api/hub/delete_history", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: data,
+            hubName: router.query.story,
+        }),
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+        console.error(resData.error);
+    } else {
+        setHistoryTitles(resData.history);
+    }
+  };
+
+  const addHistoryHandler = async () => {
+      const res = await fetch(serverURL + "/api/hub/add_history", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: historyTextTitle,
+            hubName: router.query.story,
+        }),
+      });
+      const resData = await res.json();
+      if (!res.ok) {
+        console.error(resData.error);
+      } else {
+        setHistoryTitles(resData.history);
+        setIsModalOpen(false);
+        setHistoryTextTitle("");
+      }
+  }
+
+
   return (
     <Layout>
+        <Modal
+            open={isModalOpen}
+            onClose={setIsModalOpen.bind(this, false)}
+        >
+            <div style={{ width: "80%" }}>
+                <div className="mb-4">
+                    <Typography color={"#000"}>Add Title</Typography>
+                </div>
+                <TextField value={historyTextTitle} onChange={e => setHistoryTextTitle(e.target.value)} className="w-full" id="outlined-basic" label="Outlined" variant="outlined" />
+                <div className="mt-4 w-full flex justify-end">
+                    <ButtonA clickHandler={setIsModalOpen.bind(this, false)}>
+                        <Typography type="r2">Cancel</Typography>
+                    </ButtonA>
+                    <div className="mx-2" />
+                    <ButtonA clickHandler={addHistoryHandler}>
+                        <Typography type="r2">Add</Typography>
+                    </ButtonA>
+                </div>
+            </div>
+        </Modal>
         <div className={pageStyles.pageContainer}>
             <div style={{width: 1000}} className="mb-8 flex justify-start items-center">
                 <Typography>My Blogs</Typography>
@@ -150,17 +219,17 @@ const Index = ({ hub }) => {
                 <List component="nav" aria-label="main mailbox folders">
                     <ListItem>
                         <ListItemText><strong>Timeline</strong></ListItemText>
-                        <div onClick={() => alert()} style={{ width: 50 }} className="flex justify-center items-center">
+                        <div onClick={setIsModalOpen.bind(this, true)} style={{ width: 50 }} className="flex justify-center items-center cursor-pointer">
                             <Add />
                         </div>
                     </ListItem>
-                    {hub.history.map((item, index) => (
+                    {historyTitles.map((item, index) => (
                         <ListItem key={index} button>
                             <div className="flex justify-between items-center w-full">
                                 <a className="w-full" >
                                     <ListItemText primary={item} />
                                 </a>
-                                <div onClick={() => alert()} style={{ width: 50 }} className="flex justify-center items-center">
+                                <div onClick={deleteHistoryHandler.bind(this, item)} style={{ width: 50 }} className="flex justify-center items-center">
                                     <Delete />
                                 </div>
                             </div>
