@@ -47,7 +47,7 @@ const Index = ({ err, blog }) => {
                     {blog.blogContent.map((content, index) => {
                         switch (content.type) {
                             case "text": 
-                                return <Typography type="r2">{content.content}</Typography>
+                                return <div className="mb-5"><Typography type="r2">{content.content}</Typography></div>
                             case "image": 
                                 return (
                                     <ImageDisplay
