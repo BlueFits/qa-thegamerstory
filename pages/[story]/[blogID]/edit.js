@@ -410,7 +410,7 @@ const Edit = ({ err, blog, hub }) => {
                         clearTimeout(typingTimer);
                         if (e.key === "Enter") {
                             e.preventDefault();
-                            let update = [...data];
+                            const createIndex = data.findIndex(item => item.type === "create");
                             const res = await fetch(serverURL + "/api/blog/content/create", {
                                 method: "POST",
                                 headers: {
@@ -421,24 +421,18 @@ const Edit = ({ err, blog, hub }) => {
                                     blogID: router.query.blogID,
                                     content: createText,
                                     type: contentType,
+                                    createIndex,
                                 }),
                             });
                             const resData = await res.json();
                             if (!res.ok) {
                                 console.log(resData.err);
                             } else {
-                                update.splice(index, 1, { _id: resData._id, type: contentType, content: createText }, { type: "create" });
                                 setCreateText("");
-                                setData(update);
+                                setData([...resData]);
                                 contentTypeHandler("text");
                             }
                         }
-                    }
-
-                    const deleteData = () => {
-                        let update = [...data];
-                        update.splice(index, 1);
-                        setData(update);
                     }
 
                     switch (item.type) {
@@ -450,6 +444,7 @@ const Edit = ({ err, blog, hub }) => {
                                 onKeyUp={keyUpHandler}
                                 onKeyDown={async (e) => {
                                     clearTimeout(typingTimer);
+                                    const createIndex = data.findIndex(item => item.type === "create");
                                     if (e.key === "Backspace") {
                                         if (item.content === "") {
                                             const res = await fetch(serverURL + "/api/blog/content/remove", {
@@ -460,6 +455,8 @@ const Edit = ({ err, blog, hub }) => {
                                                 },
                                                 body: JSON.stringify({
                                                     blogContentID: item._id,
+                                                    blogID: router.query.blogID,
+                                                    createIndex,
                                                 }),
                                             });
                                             if (!res.ok) {
@@ -467,8 +464,7 @@ const Edit = ({ err, blog, hub }) => {
                                                 console.log(errData.error);
                                             } else {
                                                 const resData = await res.json();
-                                                console.log("This is the log", resData);
-                                                deleteData();
+                                                setData(resData);
                                             }
                                         }
                                     } else if (e.key === "Enter") {
@@ -497,6 +493,7 @@ const Edit = ({ err, blog, hub }) => {
                                     <ImageDisplay
                                         key={"key:" + index}
                                         onClose={async () => {
+                                            const createIndex = data.findIndex(item => item.type === "create");
                                             const res = await fetch(serverURL + "/api/blog/content/remove", {
                                                 method: "POST",
                                                 headers: {
@@ -505,6 +502,8 @@ const Edit = ({ err, blog, hub }) => {
                                                 },
                                                 body: JSON.stringify({
                                                     blogContentID: item._id,
+                                                    blogID: router.query.blogID,
+                                                    createIndex,
                                                 }),
                                             });
                                             if (!res.ok) {
@@ -512,8 +511,7 @@ const Edit = ({ err, blog, hub }) => {
                                                 console.log(errData.error);
                                             } else {
                                                 const resData = await res.json();
-                                                console.log("This is the log", resData);
-                                                deleteData();
+                                                setData(resData);
                                             }
                                         }}
                                         content={item.content}

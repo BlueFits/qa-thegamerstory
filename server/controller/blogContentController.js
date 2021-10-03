@@ -2,7 +2,7 @@ const BlogContent = require("../models/BlogContent");
 const Blog = require("../models/Blog");
 
 exports.createBlogContent = async (req, res, next) => {
-    const { type, content, blogID } = req.body;
+    const { type, content, blogID, createIndex } = req.body;
     const blogContentInstance = new BlogContent({ type, content });
     await Blog.findById(blogID).exec(async (err, blog) => {
         if (err) {return next(err);}
@@ -11,14 +11,22 @@ exports.createBlogContent = async (req, res, next) => {
         } else {
             blogContentInstance.save(async (err, blogContent) => {
                 if (err) {return next(err);}
+                const blogContentUpdate = [...blog.blogContent];
+                blogContentUpdate.splice(createIndex, 0, blogContent._id)
                 const update = {
                     $set: {
-                        blogContent: [...blog.blogContent, blogContent._id],
+                        blogContent: blogContentUpdate,
                     },
                 };
-                await Blog.findByIdAndUpdate(blog._id, update, {}, (err, result) => {
+                await Blog.findByIdAndUpdate(blog._id, update, { new: true }).populate("blogContent").exec((err, result) => {
                     if (err) {return next(err);}
-                    res.status(201).send(result);
+                    if (!result) {
+                        res.status(400).send({ error: "Blog not saved" });
+                    } else {
+                        const resultCopy = [...result.blogContent];
+                        resultCopy.splice(createIndex + 1, 0, { type: "create" })
+                        res.status(201).send(resultCopy);
+                    }
                 });
             });
         }
@@ -27,7 +35,6 @@ exports.createBlogContent = async (req, res, next) => {
 
 exports.updateBlogContent = async (req, res, next) => {
     const { blogContentID, content, type } = req.body;
-    console.log(blogContentID, content, type);
     const update = {
         $set: {
             content,
@@ -40,16 +47,26 @@ exports.updateBlogContent = async (req, res, next) => {
     });
 }
 //error here
-exports.removeBlogContent = async (req, res, next) => {
-    const { blogContentID } = req.body;
-    console.log(blogContentID);
-    BlogContent.findByIdAndDelete(blogContentID, {}, (err, result) => {
+exports. removeBlogContent = async (req, res, next) => {
+    const { blogContentID, blogID, createIndex } = req.body;
+    console.log(blogContentID, blogID);
+    await Blog.findByIdAndUpdate(blogID, { $pull: {blogContent: blogContentID} }, { new: true })
+    .populate("blogContent")
+    .exec(async (err, blog) => {
         if (err) {return next(err);}
-        if (!result) {
-            res.status(400).send({ error: "error in removing" })
+        if (!blog) {
+            res.status(400).send({ error: "error in removing from array" })
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            await BlogContent.findByIdAndDelete(blogContentID, {}, (err, result) => {
+                if (err) {return next(err);}
+                if (!result) {
+                    res.status(400).send({ error: "error in removing" })
+                } else {
+                    const blogCopy = [...blog.blogContent];
+                    blogCopy.splice(createIndex - 1, 0, { type: "create" })
+                    res.status(201).send(blogCopy);
+                }
+            });
         }
     });
 };
